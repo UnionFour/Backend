@@ -1,4 +1,5 @@
 using Backend;
+using Backend.Services.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -10,6 +11,9 @@ var authOptions = authSection.Get<AuthOptions>();
 builder.Services.Configure<AuthOptions>(authSection);
 
 // Add services to the container.
+builder.Services.AddScoped<ISmsAuthService, SmsAuthService>();
+
+builder.Services.AddDataProtection();
 builder.Services
 	.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 	.AddJwtBearer(options =>
@@ -20,14 +24,18 @@ builder.Services
 			ValidAudience = authOptions.Audience,
 			IssuerSigningKey = authOptions.GetSymmetricSecurityKey()
 		};
+
+		options.MapInboundClaims = false;
 	});
 
 builder.Services.AddAuthorization();
 
+
 builder.Services
 	.AddGraphQLServer()
 	.AddAuthorization()
-	.AddQueryType<Query>();
+	.AddQueryType<Query>()
+	.AddMutationType<Mutation>();
 
 var app = builder.Build();
 
