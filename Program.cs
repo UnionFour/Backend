@@ -19,6 +19,16 @@ var authOptions = authSection.Get<AuthOptions>();
 builder.Services.Configure<AuthOptions>(authSection);
 
 // Add services to the container.
+builder.Services.AddCors(options =>
+{
+	options.AddDefaultPolicy(policy =>
+	{
+		policy.AllowAnyOrigin()
+			.AllowAnyMethod()
+			.AllowAnyHeader();
+	});
+});
+
 builder.Services.AddScoped<ISmsAuthService, SmsAuthService>();
 
 
@@ -53,6 +63,8 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 
 app.UseRouting();
+
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
