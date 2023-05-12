@@ -3,10 +3,7 @@ using Backend.Services.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
-using Backend.Services.DBContext;
-using Backend.Services.Repositories;
-using Backend.Schema.Mutation;
-using Backend.Schema.Queries;
+using Backend.Services.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +28,6 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<ISmsAuthService, SmsAuthService>();
 
-
 builder.Services.AddDataProtection();
 builder.Services
 	.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -39,6 +35,10 @@ builder.Services
 	{
 		options.TokenValidationParameters = new TokenValidationParameters
 		{
+			ValidateIssuer = true,
+			ValidateAudience = true,
+			ValidateIssuerSigningKey = true,
+			ValidateLifetime = false,
 			ValidIssuer = authOptions.Issuer,
 			ValidAudience = authOptions.Audience,
 			IssuerSigningKey = authOptions.GetSymmetricSecurityKey()
@@ -49,14 +49,16 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddPooledDbContextFactory<PostgresContext>(options => options.UseNpgsql(connection));
-builder.Services.AddScoped<OrderRepository>();
+builder.Services.AddDbContextPool<PizzeriaContext>(options => options.UseNpgsql(connection));
 
 builder.Services
 	.AddGraphQLServer()
 	.AddAuthorization()
-	.AddQueryType<Query>()
-	.AddMutationType<Mutation>();
+	.AddTypes()
+	.AddProjections()
+	.AddFiltering()
+	.AddSorting()
+	.RegisterDbContext<PizzeriaContext>();
 
 var app = builder.Build();
 
@@ -69,6 +71,6 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints => { endpoints.MapGraphQL(); });
+app.MapGraphQL();
 
 app.Run();

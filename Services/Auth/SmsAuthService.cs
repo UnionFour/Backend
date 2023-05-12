@@ -1,13 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Security.Cryptography;
-using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text.Json;
+using Backend.DAL.Pizzeria;
 using Backend.DTO.Auth;
+using Backend.Services.Context;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace Backend.Services.Auth;
 
@@ -15,13 +17,16 @@ public class SmsAuthService : ISmsAuthService
 {
 	private AuthOptions AuthOptions { get; }
 	private ITimeLimitedDataProtector TimeLimitedDataProtector { get; }
+	private PizzeriaContext PizzeriaContext { get; }
 
-	public SmsAuthService(IOptions<AuthOptions> authOptions, IDataProtectionProvider dataProtectionProvider)
+	public SmsAuthService(IOptions<AuthOptions> authOptions, IDataProtectionProvider dataProtectionProvider, PizzeriaContext pizzeriaContext)
 	{
 		AuthOptions = authOptions.Value;
 		TimeLimitedDataProtector = dataProtectionProvider
 			.CreateProtector("auth")
 			.ToTimeLimitedDataProtector();
+
+		PizzeriaContext = pizzeriaContext;
 	}
 
 	public AuthPayload SendSmsCode([Phone] string phone)
@@ -29,7 +34,7 @@ public class SmsAuthService : ISmsAuthService
 		var code = new SmsAuthCode
 		{
 			Phone = phone,
-			
+
 			// TODO: Заменить на вызов сервиса по отправке кода по телефону
 			SmsCode = "111222"
 		};
@@ -55,13 +60,23 @@ public class SmsAuthService : ISmsAuthService
 		if (tokenInput.SmsCode != authCode?.SmsCode || tokenInput.Phone != authCode.Phone)
 			throw new ArgumentException();
 
+		var user = PizzeriaContext.Users?.FirstOrDefault(value => value.Phone == tokenInput.Phone);
+		if (user == null)
+		{
+			user = PizzeriaContext.Users?.Add(new User { Phone = tokenInput.Phone }).Entity;
+			PizzeriaContext.SaveChanges();
+		}
+
 		var handler = new JsonWebTokenHandler();
 		var accessToken = handler.CreateToken(new SecurityTokenDescriptor
 		{
 			Claims = new Dictionary<string, object>
 			{
-				[JwtRegisteredClaimNames.Sub] = Guid.NewGuid().ToString()
+				[JwtRegisteredClaimNames.PhoneNumber] = tokenInput.Phone,
+				[JwtRegisteredClaimNames.Sub] = user?.Userid ?? throw new InvalidDataException()
 			},
+			Issuer = AuthOptions.Issuer,
+			Audience = AuthOptions.Audience,
 			Expires = DateTime.Now.AddMinutes(15),
 			TokenType = "Bearer",
 			SigningCredentials = new SigningCredentials(
