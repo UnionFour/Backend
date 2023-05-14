@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Backend.DAL.Pizzeria;
 
 [Table("orders")]
-public partial class Order
+public class Order
 {
     [Key]
     [Column("orderid")]
@@ -37,4 +37,8 @@ public partial class Order
     [ForeignKey("Userid")]
     [InverseProperty("Orders")]
     public virtual User User { get; set; } = null!;
+
+    [ForeignKey("Promocode")]
+    [InverseProperty("Coupons")]
+    public virtual Coupon Coupon { get; set; } = null!;
 }

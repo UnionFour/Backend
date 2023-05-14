@@ -7,7 +7,7 @@ namespace Backend.DAL.Pizzeria;
 [Table("users")]
 [Index("Email", Name = "users_email_key", IsUnique = true)]
 [Index("Phone", Name = "users_phone_key", IsUnique = true)]
-public partial class User
+public class User
 {
 	[Key]
 	[Column("userid")]
