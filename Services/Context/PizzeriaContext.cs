@@ -13,6 +13,7 @@ public class PizzeriaContext : DbContext
 	public virtual DbSet<Order>? Orders { get; set; }
 	public virtual DbSet<Product>? Products { get; set; }
 	public virtual DbSet<User>? Users { get; set; }
+	public virtual DbSet<Coupon>? Coupons { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
@@ -33,5 +34,9 @@ public class PizzeriaContext : DbContext
 				r => r.HasOne<Product>().WithMany().HasForeignKey("ProductId", "ProductName"),
 				l => l.HasOne<Order>().WithMany().HasForeignKey(x => x.OrderId)
 		);
+
+		modelBuilder.Entity<Coupon>()
+			.HasOne(c => c.Product)
+			.WithMany(p => p.Coupons);
 	}
 }

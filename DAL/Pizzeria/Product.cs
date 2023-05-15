@@ -38,4 +38,7 @@ public class Product
 
 	[InverseProperty("Products")]
 	public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+	[InverseProperty("Product")]
+	public virtual ICollection<Coupon> Coupons { get; set; } = new List<Coupon>();
 }

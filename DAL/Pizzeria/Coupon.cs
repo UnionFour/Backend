@@ -20,6 +20,6 @@ public class Coupon
     public int MaxUses { get; set; }
 
     [ForeignKey("ProductId")]
-    [InverseProperty("Products")]
+    [InverseProperty("Coupons")]
     public virtual Product Product { get; set; } = null!;
 }
