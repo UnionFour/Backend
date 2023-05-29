@@ -11,7 +11,7 @@ public class User
 {
 	[Key]
 	[Column("userid")]
-	public long Userid { get; set; }
+	public Guid Userid { get; set; }
 
 	[Column("name")]
 	public string? Name { get; set; }

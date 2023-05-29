@@ -8,16 +8,22 @@ public class OrdersProducts
 {
 	[Key]
 	[Column("id")]
-	public long Id { get; set; }
+	public Guid Id { get; set; }
+	
+	[Column("amount")]
+	public int Amount { get; set; }
 
+	[ForeignKey("Order")]
 	[Column("orderid")]
-	public long OrderId { get; set; }
+	public Guid OrderId { get; set; }
 
+	[ForeignKey("Product")]
 	[Column("productname")]
 	public string? ProductName { get; set; }
 
+	[ForeignKey("Product")]
 	[Column("productid")]
-	public long ProductId { get; set; }
+	public Guid ProductId { get; set; }
 
 	public virtual Order Order { get; set; } = null!;
 	

@@ -19,7 +19,7 @@ public class Query
 		var sub = claimsPrincipal.FindFirst(JwtRegisteredClaimNames.Sub);
 
 		return sub != null
-			? pizzeriaContext.Users?.Where(user => user.Userid == long.Parse(sub.Value))
+			? pizzeriaContext.Users?.Where(user => user.Userid == Guid.Parse(sub.Value))
 			: null;
 	}
 }

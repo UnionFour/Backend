@@ -19,7 +19,7 @@ public class Coupon
     [Column("maxuses")]
     public int MaxUses { get; set; }
 
-    [ForeignKey("ProductId")]
-    [InverseProperty("Coupons")]
-    public virtual Product Product { get; set; } = null!;
+    // [ForeignKey("ProductId")]
+    // [InverseProperty("Coupons")]
+    // public virtual Product Product { get; set; } = null!;
 }

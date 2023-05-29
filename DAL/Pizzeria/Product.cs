@@ -12,7 +12,7 @@ public class Product
 {
 	[Key]
 	[Column("productid")]
-	public long ProductId { get; set; }
+	public Guid ProductId { get; set; }
 
 	[Key]
 	[Column("name")]
@@ -39,6 +39,6 @@ public class Product
 	[InverseProperty("Products")]
 	public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
-	[InverseProperty("Product")]
-	public virtual ICollection<Coupon> Coupons { get; set; } = new List<Coupon>();
+	// [InverseProperty("Product")]
+	// public virtual ICollection<Coupon> Coupons { get; set; } = new List<Coupon>();
 }

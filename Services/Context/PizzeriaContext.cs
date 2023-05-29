@@ -35,8 +35,8 @@ public class PizzeriaContext : DbContext
 				l => l.HasOne<Order>().WithMany().HasForeignKey(x => x.OrderId)
 		);
 
-		modelBuilder.Entity<Coupon>()
-			.HasOne(c => c.Product)
-			.WithMany(p => p.Coupons);
+		// modelBuilder.Entity<Coupon>()
+		// 	.HasOne(c => c.Product)
+		// 	.WithMany(p => p.Coupons);
 	}
 }

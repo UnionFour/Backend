@@ -8,7 +8,7 @@ public class Order
 {
     [Key]
     [Column("orderid")]
-    public long OrderId { get; set; }
+    public Guid OrderId { get; set; }
 
     [Column("cost", TypeName = "money")]
     public decimal Cost { get; set; }
@@ -29,7 +29,7 @@ public class Order
     public string? Promocode { get; set; }
 
     [Column("userid")]
-    public long Userid { get; set; }
+    public Guid Userid { get; set; }
 
     [InverseProperty("Orders")]
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
@@ -38,7 +38,7 @@ public class Order
     [InverseProperty("Orders")]
     public virtual User User { get; set; } = null!;
 
-    [ForeignKey("Promocode")]
-    [InverseProperty("Coupons")]
-    public virtual Coupon Coupon { get; set; } = null!;
+    // [ForeignKey("Promocode")]
+    // [InverseProperty("Coupons")]
+    // public virtual Coupon Coupon { get; set; } = null!;
 }
