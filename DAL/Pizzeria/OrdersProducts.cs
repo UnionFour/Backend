@@ -17,11 +17,9 @@ public class OrdersProducts
 	[Column("orderid")]
 	public Guid OrderId { get; set; }
 
-	[ForeignKey("Product")]
 	[Column("productname")]
 	public string? ProductName { get; set; }
-
-	[ForeignKey("Product")]
+	
 	[Column("productid")]
 	public Guid ProductId { get; set; }
 
