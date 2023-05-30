@@ -31,8 +31,10 @@ public class Order
     [Column("userid")]
     public Guid Userid { get; set; }
 
-    [InverseProperty("Orders")]
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+    // [InverseProperty("Orders")]
+    public ICollection<Product> Products { get; set; } = new List<Product>();
+
+    public ICollection<OrdersProducts> OrdersProducts { get; set; } = new List<OrdersProducts>();
 
     [ForeignKey("Userid")]
     [InverseProperty("Orders")]

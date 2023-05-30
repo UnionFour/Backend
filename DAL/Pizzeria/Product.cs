@@ -36,8 +36,10 @@ public class Product
 	[Column("calories")]
 	public double? Calories { get; set; }
 
-	[InverseProperty("Products")]
-	public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+	// [InverseProperty("Products")]
+	public ICollection<Order> Orders { get; set; } = new List<Order>();
+	
+	public ICollection<OrdersProducts> OrdersProducts { get; set; } = new List<OrdersProducts>();
 
 	// [InverseProperty("Product")]
 	// public virtual ICollection<Coupon> Coupons { get; set; } = new List<Coupon>();

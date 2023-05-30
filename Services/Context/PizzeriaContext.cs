@@ -27,16 +27,36 @@ public class PizzeriaContext : DbContext
 			.HasPostgresEnum("work_shift_type", new[] { "5/2", "2/2", "piece-rate" });
 		
 
-		modelBuilder.Entity<Order>()
-			.HasMany(o => o.Products)
-			.WithMany(p => p.Orders)
-			.UsingEntity<OrdersProducts>(
-				r => r.HasOne<Product>().WithMany().HasForeignKey("ProductId", "ProductName"),
-				l => l.HasOne<Order>().WithMany().HasForeignKey(x => x.OrderId)
-		);
+		// modelBuilder.Entity<Order>()
+		// 	.HasMany(o => o.Products)
+		// 	.WithMany(p => p.Orders)
+		// 	.UsingEntity<OrdersProducts>(
+		// 		r => r.HasOne<Product>().WithMany().HasForeignKey("ProductId", "ProductName"),
+		// 		l => l.HasOne<Order>().WithMany().HasForeignKey(x => x.OrderId)
+		// );
 
 		// modelBuilder.Entity<Coupon>()
 		// 	.HasOne(c => c.Product)
 		// 	.WithMany(p => p.Coupons);
+
+		modelBuilder.Entity<Order>()
+			.HasMany(o => o.Products)
+			.WithMany(p => p.Orders)
+			.UsingEntity<OrdersProducts>(
+				i => i
+					.HasOne(op => op.Product)
+					.WithMany(p => p.OrdersProducts)
+					.HasForeignKey("ProductId", "ProductName"),
+				i => i
+					.HasOne(op => op.Order)
+					.WithMany(o => o.OrdersProducts)
+					.HasForeignKey(op => op.OrderId),
+				i =>
+				{
+					i.HasKey(op => new { op.ProductName, op.ProductId, op.OrderId });
+				});
+
+
+
 	}
 }
