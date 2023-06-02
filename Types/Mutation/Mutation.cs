@@ -4,6 +4,7 @@ using Backend.DTO.Auth;
 using Backend.DTO.Entities;
 using Backend.Services.Auth;
 using Backend.Services.Context;
+using Backend.Services.Repositories;
 using Microsoft.Extensions.Options;
 
 namespace Backend.Types.Mutation;
@@ -11,6 +12,16 @@ namespace Backend.Types.Mutation;
 [MutationType]
 public class Mutation
 {
+
+    private IOrderRepository _orderRepository;
+    private IUserRepository _userRepository;
+
+    public Mutation(IOrderRepository orderRepository, IUserRepository userRepository)
+    {
+        _orderRepository = orderRepository;
+        _userRepository = userRepository;
+    }
+    
     public AuthPayload SendSmsCode(
         [Service] ISmsAuthService smsAuthService,
         [Phone] string phone) =>
@@ -22,32 +33,7 @@ public class Mutation
         TokenInput input) =>
         smsAuthService.GetAccessToken(input);
 
-    public Order CreateOrder(PizzeriaContext pizzeriaContext, OrderDTO orderDto)
-    {
-        var orderId = Guid.NewGuid();
-        var prod = new List<Product>();
-
-        foreach (var product in orderDto.Products)
-        {
-            prod.Add(pizzeriaContext.Products.First(p => p.ProductId == product.ProductId));
-        }
-
-        var order = new Order()
-        {
-            OrderId = orderId,
-            Address = orderDto.Address,
-            Createdate = orderDto.Createdate,
-            Completingdate = orderDto.Completingdate,
-            Cost = orderDto.Cost,
-            Userid = orderDto.Userid,
-            Promocode = null,
-            Preparationdate = orderDto.Preparationdate,
-            Products = prod
-        };
-
-        pizzeriaContext.Orders.Add(order);
-        pizzeriaContext.SaveChanges();
-
-        return order;
-    }
+    public Order CreateOrder(
+        PizzeriaContext pizzeriaContext,
+        OrderDTO orderDto) => _orderRepository.CreateOrder(pizzeriaContext, orderDto);
 }

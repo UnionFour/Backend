@@ -12,7 +12,7 @@ public class OrdersProducts
 	public Guid Id { get; set; }
 	
 	[Column("amount")]
-	public int Amount { get; set; }
+	public int? Amount { get; set; }
 
 	[Column("orderid")]
 	public Guid OrderId { get; set; }

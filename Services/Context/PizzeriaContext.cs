@@ -54,6 +54,7 @@ public class PizzeriaContext : DbContext
 				i =>
 				{
 					i.HasKey(op => new { op.ProductName, op.ProductId, op.OrderId });
+					i.Property(pt => pt.Amount).HasDefaultValue(1);
 				});
 
 
