@@ -35,6 +35,9 @@ public class Product
 
 	[Column("calories")]
 	public double? Calories { get; set; }
+	
+	[Column("preparationTime")]
+	public TimeOnly PreparationTime { get; set; }
 
 	// [InverseProperty("Products")]
 	public ICollection<Order> Orders { get; set; } = new List<Order>();

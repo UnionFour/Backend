@@ -1,3 +1,5 @@
+using Backend.DAL.Pizzeria.Enums;
+
 namespace Backend.DTO.Entities;
 
 public class OrderDTO
@@ -8,13 +10,15 @@ public class OrderDTO
     
     public string? Address { get; set; }
     
-    public DateOnly Createdate { get; set; }
+    public DateTime? Createdate { get; set; }
     
-    public DateOnly Preparationdate { get; set; }
+    public DateTime? Preparationdate { get; set; }
     
-    public DateOnly Completingdate { get; set; }
+    public DateTime? Completingdate { get; set; }
     
     public string? Promocode { get; set; }
+    
+    public order_extradition Extradition { get; set; }
     
     public Guid Userid { get; set; }
     

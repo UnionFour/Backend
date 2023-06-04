@@ -7,5 +7,7 @@ namespace Backend.Services.Repositories;
 public interface IOrderRepository
 {
     public Order CreateOrder(PizzeriaContext pizzeriaContext, OrderDTO orderDto);
-    public ICollection<Order> GetUserOrders(PizzeriaContext pizzeriaContext, UserDTO userDto);
+    public IQueryable<ICollection<OrdersProducts>> GetUserOrdersProducts(PizzeriaContext pizzeriaContext, UserDTO userDto);
+
+    public ICollection<OrdersProducts> GetUserLastOrder(PizzeriaContext pizzeriaContext, UserDTO userDto);
 }

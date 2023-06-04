@@ -14,6 +14,7 @@ public class PizzeriaContext : DbContext
 	public virtual DbSet<Product>? Products { get; set; }
 	public virtual DbSet<User>? Users { get; set; }
 	public virtual DbSet<Coupon>? Coupons { get; set; }
+	public virtual DbSet<OrdersProducts>? OrdersProducts { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
@@ -39,6 +40,7 @@ public class PizzeriaContext : DbContext
 		// 	.HasOne(c => c.Product)
 		// 	.WithMany(p => p.Coupons);
 
+		
 		modelBuilder.Entity<Order>()
 			.HasMany(o => o.Products)
 			.WithMany(p => p.Orders)
@@ -54,10 +56,6 @@ public class PizzeriaContext : DbContext
 				i =>
 				{
 					i.HasKey(op => new { op.ProductName, op.ProductId, op.OrderId });
-					i.Property(pt => pt.Amount).HasDefaultValue(1);
 				});
-
-
-
 	}
 }
