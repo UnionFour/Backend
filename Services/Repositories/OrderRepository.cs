@@ -25,7 +25,7 @@ public class OrderRepository : IOrderRepository
             var foundProduct = pizzeriaContext.Products!.First(p => p.ProductId == product.ProductId);
             
             preparationTime = preparationTime.AddMinutes(foundProduct.PreparationTime.Minute);
-            cost += foundProduct.Price.Value;
+            cost += foundProduct.Price.Value * product.Amount;
             
             products.Add(foundProduct);
             ordersProducts.Add(new OrdersProducts()

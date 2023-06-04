@@ -4,9 +4,9 @@ namespace Backend.DTO.Entities;
 
 public class OrderDTO
 {
-    public Guid OrderId { get; set; }
+    public Guid? OrderId { get; set; }
     
-    public decimal Cost { get; set; }
+    public decimal? Cost { get; set; }
     
     public string? Address { get; set; }
     
