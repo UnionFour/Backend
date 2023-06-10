@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Backend.DAL.Pizzeria;
 using Backend.Services.Context;
+using Backend.Services.Repositories;
 using HotChocolate.Authorization;
 using Microsoft.IdentityModel.JsonWebTokens;
 
@@ -9,8 +10,15 @@ namespace Backend.Types.Queries;
 [QueryType]
 public class Query
 {
+	private IProductRepository _productRepository;
+
+	public Query(IProductRepository productRepository)
+	{
+		_productRepository = productRepository;
+	}
+
 	public IQueryable<Product>? GetProducts(PizzeriaContext pizzeriaContext) =>
-		pizzeriaContext.Products;
+		_productRepository.GetProducts(pizzeriaContext);
 
 	[Authorize]
 	[UseProjection]

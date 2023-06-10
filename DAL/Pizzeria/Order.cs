@@ -34,8 +34,6 @@ public class Order
     
     [Column("extradition")]
     public string Extradition { get; set; }
-
-    // [InverseProperty("Orders")]
     public ICollection<Product> Products { get; set; } = new List<Product>();
 
     public ICollection<OrdersProducts> OrdersProducts { get; set; } = new List<OrdersProducts>();

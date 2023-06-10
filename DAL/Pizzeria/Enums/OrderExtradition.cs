@@ -1,6 +1,6 @@
 namespace Backend.DAL.Pizzeria.Enums;
 
-public enum order_extradition
+public enum OrderExtradition
 {
     delivery,
     pickUp

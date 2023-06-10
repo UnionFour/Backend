@@ -38,11 +38,13 @@ public class Product
 	
 	[Column("preparationTime")]
 	public TimeOnly PreparationTime { get; set; }
-
-	// [InverseProperty("Products")]
 	public ICollection<Order> Orders { get; set; } = new List<Order>();
 	
 	public ICollection<OrdersProducts> OrdersProducts { get; set; } = new List<OrdersProducts>();
+
+	public ICollection<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
+	
+	public ICollection<IngredientsProducts> IngredientsProducts { get; set; } = new List<IngredientsProducts>();
 
 	// [InverseProperty("Product")]
 	// public virtual ICollection<Coupon> Coupons { get; set; } = new List<Coupon>();

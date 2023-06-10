@@ -15,6 +15,8 @@ public class PizzeriaContext : DbContext
 	public virtual DbSet<User>? Users { get; set; }
 	public virtual DbSet<Coupon>? Coupons { get; set; }
 	public virtual DbSet<OrdersProducts>? OrdersProducts { get; set; }
+	public virtual DbSet<Ingredient>? Ingredients { get; set; }
+	public virtual DbSet<IngredientsProducts>? IngredientsProducts { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
@@ -56,6 +58,23 @@ public class PizzeriaContext : DbContext
 				i =>
 				{
 					i.HasKey(op => new { op.ProductName, op.ProductId, op.OrderId });
+				});
+
+		modelBuilder.Entity<Product>()
+			.HasMany(p => p.Ingredients)
+			.WithMany(i => i.Products)
+			.UsingEntity<IngredientsProducts>(
+				j => j
+					.HasOne(ip => ip.Ingredient)
+					.WithMany(i => i.IngredientsProducts)
+					.HasForeignKey(ip => ip.IngredientID),
+				j => j
+					.HasOne(ip => ip.Product)
+					.WithMany(p => p.IngredientsProducts)
+					.HasForeignKey("ProductID", "ProductName"),
+				j =>
+				{
+					j.HasKey(ip => new { ip.IngredientID, ip.ProductID, ip.ProductName });
 				});
 	}
 }

@@ -18,7 +18,7 @@ public class OrderDTO
     
     public string? Promocode { get; set; }
     
-    public order_extradition Extradition { get; set; }
+    public OrderExtradition Extradition { get; set; }
     
     public Guid Userid { get; set; }
     
