@@ -5,5 +5,5 @@ namespace Backend.Services.Repositories;
 
 public interface IProductRepository
 {
-    public IQueryable<Product>? GetProducts(PizzeriaContext pizzeriaContext);
+    public IQueryable<Product> GetProducts(PizzeriaContext pizzeriaContext);
 }
