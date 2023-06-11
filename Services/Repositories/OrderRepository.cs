@@ -2,6 +2,7 @@ using Backend.DAL.Pizzeria;
 using Backend.DAL.Pizzeria.Enums;
 using Backend.DTO.Entities;
 using Backend.Services.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Services.Repositories;
 
@@ -63,13 +64,17 @@ public class OrderRepository : IOrderRepository
         return order;
     }
 
-    public IQueryable<ICollection<OrdersProducts>> GetUserOrdersProducts(PizzeriaContext pizzeriaContext, UserDTO userDto)
+    public ICollection<Product> GetUserLastOrder(PizzeriaContext pizzeriaContext, Guid userId)
     {
-        return pizzeriaContext.Orders.Where(o => o.Userid == userDto.Userid).Select(o => o.OrdersProducts);
-    }
+        var order = pizzeriaContext.Orders
+            .Include(o=>o.OrdersProducts)
+            .ThenInclude(op => op.Product).OrderBy(o=>o.Completingdate).Last(o => o.Userid == userId);
+        var products = new List<Product>();
+        
+        foreach (var product in order.Products)
+            if(!products.Contains(product))
+                products.Add(product);
 
-    public ICollection<OrdersProducts> GetUserLastOrder(PizzeriaContext pizzeriaContext, UserDTO userDto)
-    {
-        return pizzeriaContext.Orders.LastOrDefault(o => o.Userid == userDto.Userid)?.OrdersProducts;
+        return products;
     }
 }

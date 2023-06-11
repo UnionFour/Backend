@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Runtime.InteropServices.ComTypes;
+using System.Security.Claims;
 using Backend.DAL.Pizzeria;
 using Backend.Services.Context;
 using Backend.Services.Repositories;
@@ -11,14 +12,23 @@ namespace Backend.Types.Queries;
 public class Query
 {
 	private IProductRepository _productRepository;
+	private IOrderRepository _orderRepository;
+	private IUserRepository _userRepository;
 
-	public Query(IProductRepository productRepository)
+	public Query(IProductRepository productRepository,
+		IOrderRepository orderRepository,
+		IUserRepository userRepository)
 	{
 		_productRepository = productRepository;
+		_userRepository = userRepository;
+		_orderRepository = orderRepository;
 	}
 
 	public IQueryable<Product>? GetProducts(PizzeriaContext pizzeriaContext) =>
 		_productRepository.GetProducts(pizzeriaContext);
+
+	public ICollection<Product> GetUserLastOrder(PizzeriaContext pizzeriaContext, Guid userId) =>
+		_orderRepository.GetUserLastOrder(pizzeriaContext, userId);
 
 	[Authorize]
 	[UseProjection]
