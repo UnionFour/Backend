@@ -1,11 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using Backend.DAL.Pizzeria;
+using Backend.DTO;
 using Backend.DTO.Auth;
 using Backend.DTO.Entities;
 using Backend.Services.Auth;
 using Backend.Services.Context;
 using Backend.Services.Repositories;
+using HotChocolate.Authorization;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Backend.Types.Mutation;
 
@@ -36,4 +40,18 @@ public class Mutation
     public Order CreateOrder(
         PizzeriaContext pizzeriaContext,
         OrderDTO orderDto) => _orderRepository.CreateOrder(pizzeriaContext, orderDto);
+
+    [Authorize]
+    public User UpdateUser(
+        PizzeriaContext pizzeriaContext,
+        ClaimsPrincipal claimsPrincipal,
+        UpdateUserDTO updateUserDto)
+    {
+		var userId = claimsPrincipal.FindFirst(JwtRegisteredClaimNames.Sub);
+
+        if (userId == null)
+            throw new ApplicationException();
+        
+        return _userRepository.UpdateUser(pizzeriaContext, new Guid(userId.Value), updateUserDto);
+    }
 }
