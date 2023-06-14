@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text.Json;
 using Backend.DAL.Pizzeria;
@@ -18,25 +19,34 @@ public class SmsAuthService : ISmsAuthService
 	private AuthOptions AuthOptions { get; }
 	private ITimeLimitedDataProtector TimeLimitedDataProtector { get; }
 	private PizzeriaContext PizzeriaContext { get; }
+	private HttpClient _httpClient;
 
-	public SmsAuthService(IOptions<AuthOptions> authOptions, IDataProtectionProvider dataProtectionProvider, PizzeriaContext pizzeriaContext)
+	public SmsAuthService(IOptions<AuthOptions> authOptions, IDataProtectionProvider dataProtectionProvider, PizzeriaContext pizzeriaContext,
+		HttpClient httpClient)
 	{
 		AuthOptions = authOptions.Value;
 		TimeLimitedDataProtector = dataProtectionProvider
 			.CreateProtector("auth")
 			.ToTimeLimitedDataProtector();
 
+		_httpClient = httpClient;
+
 		PizzeriaContext = pizzeriaContext;
 	}
 
-	public AuthPayload SendSmsCode([Phone] string phone)
+	public async Task<AuthPayload> SendSmsCode([Phone] string phone)
 	{
+		var generator = new Random();
+		var smsCode = generator.Next(0, 1000000).ToString("D6");
+
+		await SendSmsCodeWithSMSRU(phone, smsCode);
+		
 		var code = new SmsAuthCode
 		{
 			Phone = phone,
 
 			// TODO: Заменить на вызов сервиса по отправке кода по телефону
-			SmsCode = "111222"
+			SmsCode = smsCode
 		};
 
 
@@ -85,5 +95,10 @@ public class SmsAuthService : ISmsAuthService
 		});
 
 		return accessToken;
+	}
+
+	private async Task SendSmsCodeWithSMSRU(string phone, string code)
+	{
+		await _httpClient.GetAsync($"https://sms.ru/sms/send?api_id=01B301F9-BDC6-F63C-B02A-9B75E89F175C&to={phone}&msg=Код+авторизации:+{code}&json=1");
 	}
 }

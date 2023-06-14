@@ -51,6 +51,7 @@ builder.Services
 		options.MapInboundClaims = false;
 	});
 
+builder.Services.AddHttpClient();
 builder.Services.AddAuthorization();
 
 builder.Services.AddDbContextPool<PizzeriaContext>(options => options.UseNpgsql(connection));

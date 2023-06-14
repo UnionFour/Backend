@@ -26,7 +26,7 @@ public class Mutation
         _userRepository = userRepository;
     }
     
-    public AuthPayload SendSmsCode(
+    public Task<AuthPayload> SendSmsCode(
         [Service] ISmsAuthService smsAuthService,
         [Phone] string phone) =>
         smsAuthService.SendSmsCode(phone);

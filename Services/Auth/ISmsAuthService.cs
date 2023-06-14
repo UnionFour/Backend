@@ -5,6 +5,6 @@ namespace Backend.Services.Auth;
 
 public interface ISmsAuthService
 {
-	public AuthPayload SendSmsCode([Phone] string phone);
+	public Task<AuthPayload> SendSmsCode([Phone] string phone);
 	public string GetAccessToken(TokenInput tokenInput);
 }

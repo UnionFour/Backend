@@ -31,6 +31,7 @@ public class Query
 		_orderRepository.GetUserLastOrder(pizzeriaContext, userId);
 
 	[Authorize]
+	[UseFirstOrDefault]
 	[UseProjection]
 	public IQueryable<User>? GetMe(PizzeriaContext pizzeriaContext, ClaimsPrincipal claimsPrincipal)
 	{
